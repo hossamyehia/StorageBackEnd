@@ -1,7 +1,7 @@
 import passport from 'passport';
 import { Strategy as localStrategy } from 'passport-local';
 
-import { db } from '../config/database';
+import { db } from '../config/database.config';
 import Lawyers from '../interface/Lawyers';
 import authService from '../service/auth.service';
 import initPassport from '../middleware/passport.middleware'

@@ -39,7 +39,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 var bcryptjs_1 = __importDefault(require("bcryptjs"));
-var database_1 = require("../config/database");
+var database_config_1 = require("../config/database.config");
 module.exports = {
     insertUser: function (username, password, name) {
         return new Promise(function (resolve, reject) { return __awaiter(void 0, void 0, void 0, function () {
@@ -50,7 +50,7 @@ module.exports = {
                         _a.trys.push([0, 2, , 3]);
                         salt = bcryptjs_1.default.genSaltSync();
                         hash = bcryptjs_1.default.hashSync(password, salt);
-                        return [4 /*yield*/, (0, database_1.db)('lawyers')
+                        return [4 /*yield*/, (0, database_config_1.db)('lawyers')
                                 .insert({
                                 username: username,
                                 password: hash,

@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var passport_1 = __importDefault(require("passport"));
 var passport_local_1 = require("passport-local");
-var database_1 = require("../config/database");
+var database_config_1 = require("../config/database.config");
 var auth_service_1 = __importDefault(require("../service/auth.service"));
 var passport_middleware_1 = __importDefault(require("../middleware/passport.middleware"));
 var options = {
@@ -15,7 +15,7 @@ var options = {
 // Init Passport Middleware
 (0, passport_middleware_1.default)();
 passport_1.default.use(new passport_local_1.Strategy(options, function verify(username, password, done) {
-    (0, database_1.db)('lawyers').where({ username: username }).first()
+    (0, database_config_1.db)('lawyers').where({ username: username }).first()
         .then(function (user) {
         if (!user)
             return done(null, false);

@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs';
-import { db } from '../config/database';
+import { db } from '../config/database.config';
 import Lawyers from '../interface/Lawyers';
 import sqlError from '../interface/sqlError';
 
