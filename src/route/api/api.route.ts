@@ -1,7 +1,14 @@
 import { Router, Request, Response } from "express";
+import lawyerAPI from "./laywer.route";
 
-export const apiRoutes = Router();
+const apiRoutes = Router();
 
-apiRoutes.route('/').get((req: Request, res: Response, next: any) => {
+apiRoutes.route('/').get(async (req: Request, res: Response, next: any) => {
     res.sendStatus(200)
-})
+});
+
+
+apiRoutes.use('/lawyer', lawyerAPI)
+
+
+export default apiRoutes;
