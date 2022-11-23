@@ -1,81 +1,47 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.errorHandler = exports.handleResponse = void 0;
-var Response = function (payload) {
-    if (payload === void 0) { payload = {}; }
-    var ApiResponse = /** @class */ (function () {
-        function ApiResponse(_a) {
-            var _b = _a.data, data = _b === void 0 ? [] : _b, _c = _a.status, status = _c === void 0 ? 1 : _c, _d = _a.errors, errors = _d === void 0 ? [] : _d, _e = _a.message, message = _e === void 0 ? '' : _e;
-            this.Data = data;
-            this.Status = status;
-            this.Errors = errors;
-            this.Message = message;
-        }
-        Object.defineProperty(ApiResponse.prototype, "data", {
-            get: function () {
-                return this.Data;
-            },
-            set: function (data) {
-                this.Data = data;
-            },
-            enumerable: false,
-            configurable: true
-        });
-        Object.defineProperty(ApiResponse.prototype, "status", {
-            get: function () {
-                return this.Status;
-            },
-            set: function (status) {
-                this.Status = status;
-            },
-            enumerable: false,
-            configurable: true
-        });
-        Object.defineProperty(ApiResponse.prototype, "errors", {
-            get: function () {
-                return this.Errors;
-            },
-            set: function (errors) {
-                this.Errors = errors;
-            },
-            enumerable: false,
-            configurable: true
-        });
-        Object.defineProperty(ApiResponse.prototype, "message", {
-            get: function () {
-                return this.Message;
-            },
-            set: function (message) {
-                this.Message = message;
-            },
-            enumerable: false,
-            configurable: true
-        });
-        ApiResponse.prototype.toJSON = function () {
-            return {
-                status: this.status,
-                message: this.message,
-                data: this.data,
-                errors: this.errors.map(function (e) { return e.message ? e.message : e; }),
-            };
-        };
-        return ApiResponse;
-    }());
-    return new ApiResponse(payload);
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-function handleResponse(res, status, message, data, errors) {
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.isPasswordValid = exports.isUsernameValid = exports.errorHandler = exports.handleResponse = void 0;
+var apiResponse_model_1 = __importDefault(require("../model/apiResponse.model"));
+/**
+ *
+ * @param res
+ * @param status
+ * @param success
+ * @param message
+ * @param data
+ */
+function handleResponse(res, status, success, message, data) {
     'use strict';
     if (status === void 0) { status = 200; }
     res.status(status)
         .json(Response({
-        status: status,
+        success: success,
         message: message,
         data: data,
-        errors: errors,
     }));
 }
 exports.handleResponse = handleResponse;
-var errorHandler = function (err, req, res, next) {
-    handleResponse(res, 500, "ERROR", [], [err]);
+var Response = function (payload) {
+    if (payload === void 0) { payload = {}; }
+    return new apiResponse_model_1.default(payload);
 };
+function errorHandler(error, req, res, next) {
+    handleResponse(res, error.status, false, error.message, []);
+}
 exports.errorHandler = errorHandler;
+;
+function isUsernameValid(username) {
+    var res = /^[a-z0-9_]+$/.exec(username);
+    var valid = !!res;
+    return valid;
+}
+exports.isUsernameValid = isUsernameValid;
+function isPasswordValid(password) {
+    var res = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$/.exec(password);
+    var valid = !!res;
+    return valid;
+}
+exports.isPasswordValid = isPasswordValid;

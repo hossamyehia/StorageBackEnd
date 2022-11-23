@@ -38,37 +38,75 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.findByUsername = exports.findById = exports.insertUser = void 0;
 var bcryptjs_1 = __importDefault(require("bcryptjs"));
 var database_config_1 = require("../config/database.config");
-module.exports = {
-    insertUser: function (username, password, name) {
-        return new Promise(function (resolve, reject) { return __awaiter(void 0, void 0, void 0, function () {
-            var salt, hash, result, err_1;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        salt = bcryptjs_1.default.genSaltSync();
-                        hash = bcryptjs_1.default.hashSync(password, salt);
-                        return [4 /*yield*/, (0, database_config_1.db)('lawyers')
-                                .insert({
-                                username: username,
-                                password: hash,
-                                name: name,
-                            })
-                                .returning(['id', 'name'])];
-                    case 1:
-                        result = _a.sent();
-                        resolve(result);
-                        return [3 /*break*/, 3];
-                    case 2:
-                        err_1 = _a.sent();
-                        if (err_1.errno === 1062)
-                            reject(new Error("Username already exists"));
-                        return [3 /*break*/, 3];
-                    case 3: return [2 /*return*/];
-                }
-            });
-        }); });
-    }
-};
+function insertUser(username, password, name) {
+    var _this = this;
+    return new Promise(function (resolve, reject) { return __awaiter(_this, void 0, void 0, function () {
+        var salt, hash;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    salt = bcryptjs_1.default.genSaltSync();
+                    hash = bcryptjs_1.default.hashSync(password, salt);
+                    return [4 /*yield*/, (0, database_config_1.db)('lawyers')
+                            .insert({
+                            username: username,
+                            password: hash,
+                            name: name,
+                        })
+                            .then(function (user) {
+                            resolve(user);
+                        }).catch(function (err) {
+                            if (err.errno === 1062)
+                                reject(new Error("Username already exists"));
+                            reject(new Error(err));
+                        })];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+}
+exports.insertUser = insertUser;
+function findById(id) {
+    var _this = this;
+    return new Promise(function (resolve, reject) { return __awaiter(_this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, (0, database_config_1.db)('lawyers').select('id', 'name').where({ id: id }).first()
+                        .then(function (user) {
+                        resolve(user);
+                    }).catch(function (err) {
+                        reject(new Error(err));
+                    })];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+}
+exports.findById = findById;
+function findByUsername(username) {
+    var _this = this;
+    return new Promise(function (resolve, reject) { return __awaiter(_this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, (0, database_config_1.db)('lawyers').select('*').where({ username: username }).first()
+                        .then(function (user) {
+                        resolve(user);
+                    }).catch(function (err) {
+                        reject(new Error(err));
+                    })];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+}
+exports.findByUsername = findByUsername;

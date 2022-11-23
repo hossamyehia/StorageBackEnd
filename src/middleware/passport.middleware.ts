@@ -1,21 +1,20 @@
 import passport from 'passport';
 
-import { db } from '../config/database.config';
-import Lawyers from '../interface/Lawyers';
+import { findById } from '../service/lawyer.service';
+import LawyerType from '../types/lawyer';
 
-type User = {
-  _id?: number
-}
 
 export default () => {
 
-  passport.serializeUser((user: User, done) => {
-    done(null, user._id);
+  passport.serializeUser((user: LawyerType, done) => {
+    process.nextTick(function() {
+      return done(null, user.id);
+    });
   });
 
-  passport.deserializeUser((id: number, done) => {
-    db<Lawyers>('lawyers').where({ id }).first()
-      .then((user) => { done(null, user); })
+  passport.deserializeUser(async (id: number, done) => {
+    await findById(id)
+      .then((user: LawyerType | any) => { done(null, user); })
       .catch((err) => { done(err, null); });
   });
 

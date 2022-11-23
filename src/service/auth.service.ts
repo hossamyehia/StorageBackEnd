@@ -1,10 +1,15 @@
 import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken'; 
 
-function comparePass(userPassword: string, databasePassword: string) {
+import configs from '../config/configs.config';
+
+import LawyerType from '../types/lawyer';
+
+export function comparePass(userPassword: string, databasePassword: string) {
   return bcrypt.compareSync(userPassword, databasePassword);
 }
 
-
-export = {
-  comparePass
+export function getToken(user: LawyerType | any) {
+  return jwt.sign(user, configs.SECRET,
+      {expiresIn: 60 * 60 * 8});
 };

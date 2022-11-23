@@ -1,31 +1,45 @@
 import passport from 'passport';
 import { Strategy as localStrategy } from 'passport-local';
+import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
 
-import { db } from '../config/database.config';
-import Lawyers from '../interface/Lawyers';
-import authService from '../service/auth.service';
-import initPassport from '../middleware/passport.middleware'
+import { comparePass } from '../service/auth.service';
+import { findById, findByUsername } from '../service/lawyer.service';
+
+import LawyerType from '../types/lawyer';
 
 const options = {
     usernameField: 'username',
     passwordField: 'password'
 };
 
-// Init Passport Middleware
-initPassport()
+const opts = {
+    jwtFromRequest : ExtractJwt.fromAuthHeaderAsBearerToken(),
+    secretOrKey : process.env.SECRET
+}
 
-passport.use(new localStrategy(options, function verify(username: string, password: string, done) {
-    db<Lawyers>('lawyers').where({ username }).first()
-        .then((user) => {
-            if (!user) return done(null, false);
-            if (!authService.comparePass(password, user.password)) {
-                return done(null, false);
-            } else {
-                let {id} = user;
-                return done(null, {_id: id});
-            }
+
+passport.use('local', new localStrategy(options, function verify(username: string, password: string, done) {
+    findByUsername(username)
+    .then((user: LawyerType | any) => {
+        if (!user) return done(null, false);
+        if (!comparePass(password, user.password)) {
+            return done(null, false);
+        } else {
+            let {id} = user;
+            return done(null, {id: id});
+        }
+    })
+    .catch((err) => { return done(err); });
+}));
+
+passport.use("jwt", new JwtStrategy(opts,
+    (jwt_payload, done) => {
+        findById(jwt_payload.id)
+        .then((user: LawyerType | any) => {
+            if (user) return done(null, user);
+            else  return done(null, false);
         })
-        .catch((err) => { return done(err); });
+        .catch((err) => { return done(err, false); });
 }));
 
 export default passport;

@@ -5,28 +5,40 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var passport_1 = __importDefault(require("passport"));
 var passport_local_1 = require("passport-local");
-var database_config_1 = require("../config/database.config");
-var auth_service_1 = __importDefault(require("../service/auth.service"));
-var passport_middleware_1 = __importDefault(require("../middleware/passport.middleware"));
+var passport_jwt_1 = require("passport-jwt");
+var auth_service_1 = require("../service/auth.service");
+var lawyer_service_1 = require("../service/lawyer.service");
 var options = {
     usernameField: 'username',
     passwordField: 'password'
 };
-// Init Passport Middleware
-(0, passport_middleware_1.default)();
-passport_1.default.use(new passport_local_1.Strategy(options, function verify(username, password, done) {
-    (0, database_config_1.db)('lawyers').where({ username: username }).first()
+var opts = {
+    jwtFromRequest: passport_jwt_1.ExtractJwt.fromAuthHeaderAsBearerToken(),
+    secretOrKey: process.env.SECRET
+};
+passport_1.default.use('local', new passport_local_1.Strategy(options, function verify(username, password, done) {
+    (0, lawyer_service_1.findByUsername)(username)
         .then(function (user) {
         if (!user)
             return done(null, false);
-        if (!auth_service_1.default.comparePass(password, user.password)) {
+        if (!(0, auth_service_1.comparePass)(password, user.password)) {
             return done(null, false);
         }
         else {
             var id = user.id;
-            return done(null, { _id: id });
+            return done(null, { id: id });
         }
     })
         .catch(function (err) { return done(err); });
+}));
+passport_1.default.use("jwt", new passport_jwt_1.Strategy(opts, function (jwt_payload, done) {
+    (0, lawyer_service_1.findById)(jwt_payload.id)
+        .then(function (user) {
+        if (user)
+            return done(null, user);
+        else
+            return done(null, false);
+    })
+        .catch(function (err) { return done(err, false); });
 }));
 exports.default = passport_1.default;

@@ -35,67 +35,22 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
-    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
-        if (ar || !(i in from)) {
-            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
-            ar[i] = from[i];
-        }
-    }
-    return to.concat(ar || Array.prototype.slice.call(from));
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = require("express");
 var passport_config_1 = __importDefault(require("../../config/passport.config"));
-var helper_util_1 = require("../../util/helper.util");
 var lawyers_controller_1 = __importDefault(require("../../controller/lawyers.controller"));
 var lawyerAPI = (0, express_1.Router)();
-lawyerAPI.route("/").all(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+lawyerAPI.route("/").all(passport_config_1.default.authenticate('jwt'), function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         res.sendStatus(404);
         return [2 /*return*/];
     });
 }); });
 lawyerAPI.route("/login")
-    .post(lawyers_controller_1.default.loginRedirect, function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    return __generator(this, function (_a) {
-        passport_config_1.default.authenticate('local', function (err, user, info) {
-            if (err) {
-                (0, helper_util_1.handleResponse)(res, 500, 'error');
-            }
-            if (!user) {
-                (0, helper_util_1.handleResponse)(res, 404, 'User not found');
-            }
-            if (user) {
-                (0, helper_util_1.handleResponse)(res, 200, 'success');
-                req.logIn(user, function (err) {
-                    if (err) {
-                        (0, helper_util_1.handleResponse)(res, 500, 'error');
-                    }
-                });
-            }
-        })(req, res, next);
-        return [2 /*return*/];
-    });
-}); });
+    .post(lawyers_controller_1.default.loginRedirect, lawyers_controller_1.default.validate, lawyers_controller_1.default.login);
 lawyerAPI.route("/register")
-    .post(lawyers_controller_1.default.loginRedirect, function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    return __generator(this, function (_a) {
-        return [2 /*return*/, lawyers_controller_1.default
-                .createUser(req, res, next)
-                .then(function (response) {
-                passport_config_1.default.authenticate("local", function (err, user, info) {
-                    if (user) {
-                        (0, helper_util_1.handleResponse)(res, 200, "success");
-                    }
-                })(req, res, next);
-            })
-                .catch(function (err) {
-                helper_util_1.handleResponse.apply(void 0, __spreadArray(__spreadArray([res, 500, "error"], [], false), [[err]], false));
-            })];
-    });
-}); });
+    .post(lawyers_controller_1.default.loginRedirect, lawyers_controller_1.default.validate, lawyers_controller_1.default.register);
 exports.default = lawyerAPI;
