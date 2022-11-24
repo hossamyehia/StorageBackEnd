@@ -38,14 +38,18 @@ function login(req: Request, res: Response, next: NextFunction) {
 
 
 function loginRequired(req: Request, res: Response, next: NextFunction) {
-    if (!req.user) return next(new HttpException(401, "Please log in"));
-    return next();
+    passport.authenticate('jwt', (err, user, info) => {
+        if (!user) return next(new HttpException(401, "Please log in"));
+        return next();
+    })(req, res, next);
 }
 
 
 function loginRedirect(req: Request, res: Response, next: NextFunction) {
-    if (req.user) return next(new HttpException(400, "You are already logged in"));
-    return next();
+    passport.authenticate('jwt', (err, user, info) => {
+        if (user) return next(new HttpException(400, "You are already logged in"));
+        return next();
+    })(req, res, next);
 }
 
 

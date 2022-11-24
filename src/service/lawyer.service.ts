@@ -48,3 +48,15 @@ export function findByUsername(username: string) {
             })
     })
 }
+
+export function updateUser(id: number, data: { name?: string, username?: string, password?: string }){
+    return new Promise(async (resolve, reject) => {
+        await db<LawyerInterface>('lawyers').where({ id }).first().update(data)
+        .then((user) => {
+            resolve(user);
+        }).catch((err: sqlError | any) => {
+            reject(new Error(err))
+        })
+    })
+}
+

@@ -39,7 +39,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.findByUsername = exports.findById = exports.insertUser = void 0;
+exports.updateUser = exports.findByUsername = exports.findById = exports.insertUser = void 0;
 var bcryptjs_1 = __importDefault(require("bcryptjs"));
 var database_config_1 = require("../config/database.config");
 function insertUser(username, password, name) {
@@ -110,3 +110,22 @@ function findByUsername(username) {
     }); });
 }
 exports.findByUsername = findByUsername;
+function updateUser(id, data) {
+    var _this = this;
+    return new Promise(function (resolve, reject) { return __awaiter(_this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, (0, database_config_1.db)('lawyers').where({ id: id }).first().update(data)
+                        .then(function (user) {
+                        resolve(user);
+                    }).catch(function (err) {
+                        reject(new Error(err));
+                    })];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+}
+exports.updateUser = updateUser;

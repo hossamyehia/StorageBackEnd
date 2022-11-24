@@ -34,14 +34,18 @@ function login(req, res, next) {
     })(req, res, next);
 }
 function loginRequired(req, res, next) {
-    if (!req.user)
-        return next(new HttpException_model_1.default(401, "Please log in"));
-    return next();
+    passport_config_1.default.authenticate('jwt', function (err, user, info) {
+        if (!user)
+            return next(new HttpException_model_1.default(401, "Please log in"));
+        return next();
+    })(req, res, next);
 }
 function loginRedirect(req, res, next) {
-    if (req.user)
-        return next(new HttpException_model_1.default(400, "You are already logged in"));
-    return next();
+    passport_config_1.default.authenticate('jwt', function (err, user, info) {
+        if (user)
+            return next(new HttpException_model_1.default(400, "You are already logged in"));
+        return next();
+    })(req, res, next);
 }
 /** Helper Functions */
 function validate(req, res, next) {

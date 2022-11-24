@@ -40,10 +40,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = require("express");
-var passport_config_1 = __importDefault(require("../../config/passport.config"));
 var lawyers_controller_1 = __importDefault(require("../../controller/lawyers.controller"));
 var lawyerAPI = (0, express_1.Router)();
-lawyerAPI.route("/").all(passport_config_1.default.authenticate('jwt'), function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+lawyerAPI.route("/").all(lawyers_controller_1.default.loginRequired, function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         res.sendStatus(404);
         return [2 /*return*/];
