@@ -42,7 +42,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateUser = exports.findByUsername = exports.findById = exports.insertUser = void 0;
 var bcryptjs_1 = __importDefault(require("bcryptjs"));
 var database_config_1 = require("../config/database.config");
-function insertUser(username, password, name) {
+function insertUser(username, password, name, type) {
     var _this = this;
     return new Promise(function (resolve, reject) { return __awaiter(_this, void 0, void 0, function () {
         var salt, hash;
@@ -51,11 +51,12 @@ function insertUser(username, password, name) {
                 case 0:
                     salt = bcryptjs_1.default.genSaltSync();
                     hash = bcryptjs_1.default.hashSync(password, salt);
-                    return [4 /*yield*/, (0, database_config_1.db)('lawyers')
+                    return [4 /*yield*/, (0, database_config_1.db)('user')
                             .insert({
                             username: username,
                             password: hash,
                             name: name,
+                            type: type,
                         })
                             .then(function (user) {
                             resolve(user);
@@ -77,7 +78,9 @@ function findById(id) {
     return new Promise(function (resolve, reject) { return __awaiter(_this, void 0, void 0, function () {
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, (0, database_config_1.db)('lawyers').select('id', 'name').where({ id: id }).first()
+                case 0: return [4 /*yield*/, (0, database_config_1.db)('user')
+                        .select('id', 'name')
+                        .where({ id: id }).first()
                         .then(function (user) {
                         resolve(user);
                     }).catch(function (err) {
@@ -96,7 +99,9 @@ function findByUsername(username) {
     return new Promise(function (resolve, reject) { return __awaiter(_this, void 0, void 0, function () {
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, (0, database_config_1.db)('lawyers').select('*').where({ username: username }).first()
+                case 0: return [4 /*yield*/, (0, database_config_1.db)('user')
+                        .select('*')
+                        .where({ username: username }).first()
                         .then(function (user) {
                         resolve(user);
                     }).catch(function (err) {
@@ -115,7 +120,7 @@ function updateUser(id, data) {
     return new Promise(function (resolve, reject) { return __awaiter(_this, void 0, void 0, function () {
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, (0, database_config_1.db)('lawyers').where({ id: id }).first().update(data)
+                case 0: return [4 /*yield*/, (0, database_config_1.db)('user').where({ id: id }).first().update(data)
                         .then(function (user) {
                         resolve(user);
                     }).catch(function (err) {

@@ -40,3 +40,15 @@ export function isPasswordValid(password: string) {
     const valid = !!res;
     return valid;
 }
+
+export function isIDValid(id: string) {
+    if( isNaN(parseFloat(id)) ) return false;
+    if( id.length !== 14) return false;
+    return true;
+}
+
+export function isPhoneValid(phone: string) {
+    if( isNaN(parseFloat(phone)) ) return false;
+    if( phone.length !== 11) return false;
+    return true;
+}

@@ -40,7 +40,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = require("express");
-var laywer_route_1 = __importDefault(require("./laywer.route"));
+var user_route_1 = __importDefault(require("./user.route"));
 var apiRoutes = (0, express_1.Router)();
 apiRoutes.route('/').get(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
@@ -48,5 +48,5 @@ apiRoutes.route('/').get(function (req, res, next) { return __awaiter(void 0, vo
         return [2 /*return*/];
     });
 }); });
-apiRoutes.use('/lawyer', laywer_route_1.default);
+apiRoutes.use('/user', user_route_1.default);
 exports.default = apiRoutes;

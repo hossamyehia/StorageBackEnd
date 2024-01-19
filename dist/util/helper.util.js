@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isPasswordValid = exports.isUsernameValid = exports.errorHandler = exports.handleResponse = void 0;
+exports.isPhoneValid = exports.isIDValid = exports.isPasswordValid = exports.isUsernameValid = exports.errorHandler = exports.handleResponse = void 0;
 var apiResponse_model_1 = __importDefault(require("../model/apiResponse.model"));
 /**
  *
@@ -45,3 +45,19 @@ function isPasswordValid(password) {
     return valid;
 }
 exports.isPasswordValid = isPasswordValid;
+function isIDValid(id) {
+    if (isNaN(parseFloat(id)))
+        return false;
+    if (id.length !== 14)
+        return false;
+    return true;
+}
+exports.isIDValid = isIDValid;
+function isPhoneValid(phone) {
+    if (isNaN(parseFloat(phone)))
+        return false;
+    if (phone.length !== 11)
+        return false;
+    return true;
+}
+exports.isPhoneValid = isPhoneValid;

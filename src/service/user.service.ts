@@ -1,20 +1,21 @@
 import bcrypt from 'bcryptjs';
 import { db } from '../config/database.config';
-import LawyerInterface from '../interface/Lawyer.interface';
+import UserInterface from '../interface/User.interface';
 import sqlError from '../types/sqlError';
 
 
-export function insertUser(username: string, password: string, name: string) {
+export function insertUser(username: string, password: string, name: string, type: string) {
     return new Promise(async (resolve, reject) => {
 
         const salt = bcrypt.genSaltSync();
         const hash = bcrypt.hashSync(password, salt);
 
-        await db<LawyerInterface>('lawyers')
+        await db<UserInterface>('user')
             .insert({
                 username,
                 password: hash,
                 name,
+                type,
             })
             .then((user) => {
                 resolve(user);
@@ -29,7 +30,9 @@ export function insertUser(username: string, password: string, name: string) {
 
 export function findById(id: number) {
     return new Promise(async (resolve, reject) => {
-        await db<LawyerInterface>('lawyers').select('id', 'name').where({ id: id }).first()
+        await db<UserInterface>('user')
+            .select('id', 'name')
+            .where({ id: id }).first()
             .then((user) => {
                 resolve(user);
             }).catch((err: sqlError | any) => {
@@ -40,7 +43,9 @@ export function findById(id: number) {
 
 export function findByUsername(username: string) {
     return new Promise(async (resolve, reject) => {
-        await db<LawyerInterface>('lawyers').select('*').where({ username }).first()
+        await db<UserInterface>('user')
+            .select('*')
+            .where({ username }).first()
             .then((user) => {
                 resolve(user);
             }).catch((err: sqlError | any) => {
@@ -51,7 +56,7 @@ export function findByUsername(username: string) {
 
 export function updateUser(id: number, data: { name?: string, username?: string, password?: string }){
     return new Promise(async (resolve, reject) => {
-        await db<LawyerInterface>('lawyers').where({ id }).first().update(data)
+        await db<UserInterface>('user').where({ id }).first().update(data)
         .then((user) => {
             resolve(user);
         }).catch((err: sqlError | any) => {

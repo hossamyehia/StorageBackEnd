@@ -41,15 +41,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = require("express");
 var user_controller_1 = __importDefault(require("../../controller/user.controller"));
-var lawyerAPI = (0, express_1.Router)();
-lawyerAPI.route("/").all(user_controller_1.default.loginRequired, function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+var userAPI = (0, express_1.Router)();
+userAPI.route("/").all(user_controller_1.default.loginRequired, function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         res.sendStatus(404);
         return [2 /*return*/];
     });
 }); });
-lawyerAPI.route("/login")
+userAPI.route("/login")
     .post(user_controller_1.default.loginRedirect, user_controller_1.default.validate, user_controller_1.default.login);
-lawyerAPI.route("/register")
+userAPI.route("/register")
     .post(user_controller_1.default.loginRedirect, user_controller_1.default.validate, user_controller_1.default.register);
-exports.default = lawyerAPI;
+exports.default = userAPI;

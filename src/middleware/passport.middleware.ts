@@ -1,7 +1,7 @@
 import passport from 'passport';
 
-import { findById } from '../service/lawyer.service';
-import LawyerType from '../types/lawyer';
+import { findById } from '../service/user.service';
+import LawyerType from '../types/user';
 
 
 export default () => {

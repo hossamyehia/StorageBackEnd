@@ -40,7 +40,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var passport_1 = __importDefault(require("passport"));
-var lawyer_service_1 = require("../service/lawyer.service");
+var user_service_1 = require("../service/user.service");
 exports.default = (function () {
     passport_1.default.serializeUser(function (user, done) {
         process.nextTick(function () {
@@ -50,7 +50,7 @@ exports.default = (function () {
     passport_1.default.deserializeUser(function (id, done) { return __awaiter(void 0, void 0, void 0, function () {
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, (0, lawyer_service_1.findById)(id)
+                case 0: return [4 /*yield*/, (0, user_service_1.findById)(id)
                         .then(function (user) { done(null, user); })
                         .catch(function (err) { done(err, null); })];
                 case 1:

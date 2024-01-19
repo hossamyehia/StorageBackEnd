@@ -7,7 +7,7 @@ var passport_1 = __importDefault(require("passport"));
 var passport_local_1 = require("passport-local");
 var passport_jwt_1 = require("passport-jwt");
 var auth_service_1 = require("../service/auth.service");
-var lawyer_service_1 = require("../service/lawyer.service");
+var user_service_1 = require("../service/user.service");
 var options = {
     usernameField: 'username',
     passwordField: 'password'
@@ -17,7 +17,7 @@ var opts = {
     secretOrKey: process.env.SECRET
 };
 passport_1.default.use('local', new passport_local_1.Strategy(options, function verify(username, password, done) {
-    (0, lawyer_service_1.findByUsername)(username)
+    (0, user_service_1.findByUsername)(username)
         .then(function (user) {
         if (!user)
             return done(null, false);
@@ -32,7 +32,7 @@ passport_1.default.use('local', new passport_local_1.Strategy(options, function 
         .catch(function (err) { return done(err); });
 }));
 passport_1.default.use("jwt", new passport_jwt_1.Strategy(opts, function (jwt_payload, done) {
-    (0, lawyer_service_1.findById)(jwt_payload.id)
+    (0, user_service_1.findById)(jwt_payload.id)
         .then(function (user) {
         if (user)
             return done(null, user);

@@ -3,9 +3,9 @@ import { Strategy as localStrategy } from 'passport-local';
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
 
 import { comparePass } from '../service/auth.service';
-import { findById, findByUsername } from '../service/lawyer.service';
+import { findById, findByUsername } from '../service/user.service';
 
-import LawyerType from '../types/lawyer';
+import UserType from '../types/user';
 
 const options = {
     usernameField: 'username',
@@ -20,7 +20,7 @@ const opts = {
 
 passport.use('local', new localStrategy(options, function verify(username: string, password: string, done) {
     findByUsername(username)
-    .then((user: LawyerType | any) => {
+    .then((user: UserType | any) => {
         if (!user) return done(null, false);
         if (!comparePass(password, user.password)) {
             return done(null, false);
@@ -35,7 +35,7 @@ passport.use('local', new localStrategy(options, function verify(username: strin
 passport.use("jwt", new JwtStrategy(opts,
     (jwt_payload, done) => {
         findById(jwt_payload.id)
-        .then((user: LawyerType | any) => {
+        .then((user: UserType | any) => {
             if (user) return done(null, user);
             else  return done(null, false);
         })
