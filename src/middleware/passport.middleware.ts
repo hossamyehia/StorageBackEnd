@@ -1,22 +1,21 @@
 import passport from 'passport';
 
-import { findById } from '../service/user.service';
-import LawyerType from '../types/user';
-
+import { findById } from '../User/user.service';
+import User from '../User/user.model';
+import Token from '../shared/types/token';
 
 export default () => {
 
-  passport.serializeUser((user: LawyerType, done) => {
+  passport.serializeUser((token: Token, done) => {
     process.nextTick(function() {
-      return done(null, user.id);
+      return done(null, token);
     });
   });
 
-  passport.deserializeUser(async (id: number, done) => {
-    await findById(id)
-      .then((user: LawyerType | any) => { done(null, user); })
+  passport.deserializeUser(async (token: {id:number, name:string, role: string}, done) => {
+    await findById(token.id)
+      .then((user: User | any) => { done(null, user); })
       .catch((err) => { done(err, null); });
   });
-
 };
 

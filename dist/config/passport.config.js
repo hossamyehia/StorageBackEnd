@@ -6,8 +6,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var passport_1 = __importDefault(require("passport"));
 var passport_local_1 = require("passport-local");
 var passport_jwt_1 = require("passport-jwt");
-var auth_service_1 = require("../service/auth.service");
-var user_service_1 = require("../service/user.service");
+var auth_service_1 = require("../shared/services/auth.service");
+var user_service_1 = require("../User/user.service");
 var options = {
     usernameField: 'username',
     passwordField: 'password'
@@ -20,13 +20,13 @@ passport_1.default.use('local', new passport_local_1.Strategy(options, function 
     (0, user_service_1.findByUsername)(username)
         .then(function (user) {
         if (!user)
-            return done(null, false);
+            return done(null, false, { message: 'User Not Found.' });
         if (!(0, auth_service_1.comparePass)(password, user.password)) {
-            return done(null, false);
+            return done(null, false, { message: 'Incorrect Password.' });
         }
         else {
-            var id = user.id;
-            return done(null, { id: id });
+            var id = user.id, name_1 = user.name, title = user.title, permission = user.permission;
+            return done(null, { id: id, name: name_1, title: title, permission: permission });
         }
     })
         .catch(function (err) { return done(err); });

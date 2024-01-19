@@ -2,10 +2,11 @@ import passport from 'passport';
 import { Strategy as localStrategy } from 'passport-local';
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
 
-import { comparePass } from '../service/auth.service';
-import { findById, findByUsername } from '../service/user.service';
+import { comparePass } from '../shared/services/auth.service';
+import { findById, findByUsername } from '../User/user.service';
 
-import UserType from '../types/user';
+/*import UserType from '../types/user';*/
+import User from "../User/user.model";
 
 const options = {
     usernameField: 'username',
@@ -20,13 +21,13 @@ const opts = {
 
 passport.use('local', new localStrategy(options, function verify(username: string, password: string, done) {
     findByUsername(username)
-    .then((user: UserType | any) => {
-        if (!user) return done(null, false);
+    .then((user: User | any) => {
+        if (!user) return done(null, false, { message: 'User Not Found.' });
         if (!comparePass(password, user.password)) {
-            return done(null, false);
+            return done(null, false, { message: 'Incorrect Password.' });
         } else {
-            let {id} = user;
-            return done(null, {id: id});
+            let {id, name, title, permission} = user;
+            return done(null, {id: id, name: name, title: title, permission: permission});
         }
     })
     .catch((err) => { return done(err); });
@@ -35,7 +36,7 @@ passport.use('local', new localStrategy(options, function verify(username: strin
 passport.use("jwt", new JwtStrategy(opts,
     (jwt_payload, done) => {
         findById(jwt_payload.id)
-        .then((user: UserType | any) => {
+        .then((user: User | any) => {
             if (user) return done(null, user);
             else  return done(null, false);
         })
